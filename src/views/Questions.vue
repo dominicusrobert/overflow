@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import QuestionItem from '../components/QuestionItem'
+import QuestionItem from '@/components/QuestionItem'
 
 export default {
   components: {

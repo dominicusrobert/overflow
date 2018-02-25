@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns is-mobile">
-        <div class="column is-one-fifth"  id="total_vote">
+        <div class="column is-one-fifth" id="total_vote">
           <label>total</label>
         </div>
         <div class="column">
