@@ -4,7 +4,6 @@
       <span>The Overflow</span>
     </header>
     <main>
-      <img src="./assets/icon_overflow.jpg" alt="The Overflow">
       <router-view></router-view>
     </main>
   </div>

@@ -1,5 +1,6 @@
 <template>
   <div id="signup">
+    <img src="../assets/icon_overflow.jpg" alt="The Overflow">
     <p class="help is-danger">{{error_message}}</p>
       <div class="field">
         <label class="label">Email</label>

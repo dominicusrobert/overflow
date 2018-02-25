@@ -1,5 +1,6 @@
 <template>
   <div id="login">
+    <img src="../assets/icon_overflow.jpg" alt="The Overflow">
     <p class="help is-danger">{{error_message}}</p>
     <div class="field">
       <label class="label">Email</label>
@@ -42,6 +43,7 @@ export default {
       auth.signInWithEmailAndPassword(email, password)
         .then(function () {
           self.error_message = ''
+          self.$router.push('/questions')
         })
         .catch(function (error) {
           self.error_message = 'Login failed please make sure you have enter valid email and password'

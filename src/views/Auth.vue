@@ -28,7 +28,7 @@ export default {
   },
   data () {
     return {
-      showSignup: true
+      showSignup: false
     }
   },
   methods: {
