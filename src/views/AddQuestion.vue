@@ -21,6 +21,9 @@
 </template>
 
 <script>
+import { questionCollection } from '../firebase'
+import swal from 'sweetalert'
+
 export default {
   data () {
     return {
@@ -30,7 +33,34 @@ export default {
   },
   methods: {
     saveQuestion (title, question) {
+      let self = this
+      const authorEmail = localStorage.getItem('email')
+      const createdDate = Date.now()
+      const id = String(createdDate)
+        .concat('.')
+        .concat(authorEmail.substring(0, authorEmail.indexOf('@')))
 
+      var docRef = questionCollection.doc(id)
+      docRef.set({
+        authorEmail: authorEmail,
+        created: createdDate,
+        title: title,
+        question: question,
+        shortDesc: question.substring(0, 40).concat('...')
+      })
+        .then(() => {
+          swal('SUCCESS', 'Question has been created', 'success')
+            .then(() => {
+              console.log('Success')
+              self.$router.push('/questions')
+            })
+            .catch((err) => {
+              console.error(err)
+            })
+        })
+        .catch((err) => {
+          console.error(err)
+        })
     }
   }
 }

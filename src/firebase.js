@@ -11,4 +11,5 @@ const app = initializeApp({
 })
 
 export const db = app.firestore()
+export const questionCollection = db.collection('questions')
 export const auth = app.auth()

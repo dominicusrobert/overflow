@@ -6,9 +6,9 @@
         </div>
         <div class="column">
           <p>
-            <strong>title</strong>
+            <strong>{{questionData.title}}</strong>
             <br>
-            short_description
+            {{questionData.shortDesc}}
           </p>
         </div>
     </div>
@@ -17,7 +17,7 @@
 
 <script>
 export default {
-
+  props: ['questionData']
 }
 </script>
 

@@ -3,16 +3,39 @@
     <div class="button is-link" v-on:click="moveToAddQuestion">
       Add new Question
     </div>
-    <QuestionItem></QuestionItem>
+    <QuestionItem v-for="(question, index) in listQuestion" 
+    :questionData="question" v-bind:key="listId[index]">
+    </QuestionItem>
+    
   </div>
 </template>
 
 <script>
 import QuestionItem from '@/components/QuestionItem'
+import { questionCollection } from '../firebase'
 
 export default {
+  data () {
+    return {
+      listId: [],
+      listQuestion: []
+    }
+  },
   components: {
     QuestionItem
+  },
+  created () {
+    let self = this
+    questionCollection.get()
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
+          self.listId.push(doc.id)
+          self.listQuestion.push(doc.data())
+        })
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err)
+      })
   },
   methods: {
     moveToAddQuestion () {
