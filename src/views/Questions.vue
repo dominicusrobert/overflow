@@ -3,10 +3,14 @@
     <div class="button is-link" v-on:click="moveToAddQuestion">
       Add new Question
     </div>
-    <QuestionItem v-for="(question, index) in listQuestion" 
-    :questionData="question" v-bind:key="listId[index]">
-    </QuestionItem>
-    
+    <div v-if="!showDetail">
+      <QuestionItem v-for="(question, index) in listQuestion" 
+      :questionData="question" v-bind:key="listId[index]">
+      </QuestionItem>
+    </div>
+    <div v-else>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -18,11 +22,22 @@ export default {
   data () {
     return {
       listId: [],
-      listQuestion: []
+      listQuestion: [],
+      showDetail: false
     }
   },
   components: {
     QuestionItem
+  },
+  watch: {
+    '$route.params.id' () {
+      let params = this.$route.params.id
+      if (params !== undefined && params !== '') {
+        this.showDetail = true
+      } else {
+        this.showDetail = false
+      }
+    }
   },
   created () {
     let self = this

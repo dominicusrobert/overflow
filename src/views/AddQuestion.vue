@@ -42,6 +42,7 @@ export default {
 
       var docRef = questionCollection.doc(id)
       docRef.set({
+        id: id,
         authorEmail: authorEmail,
         created: createdDate,
         title: title,

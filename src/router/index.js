@@ -32,7 +32,7 @@ export default new Router({
     },
     {
       path: '/questions',
-      name: 'Questions',
+      // name: 'Questions',
       component: Questions,
       beforeEnter: (to, from, next) => {
         auth.onAuthStateChanged(function (user) {
@@ -42,21 +42,15 @@ export default new Router({
             this.a.push('/authorization')
           }
         })
-      }
-    },
-    {
-      path: '/questionDetail',
-      name: 'QuestionDetail',
-      component: QuestionDetail,
-      beforeEnter: (to, from, next) => {
-        auth.onAuthStateChanged(function (user) {
-          if (user) {
-            next()
-          } else {
-            this.a.push('/authorization')
-          }
-        })
-      }
+      },
+      children: [
+        {
+          path: ':id',
+          component: QuestionDetail,
+          name: 'QuestionDetail',
+          props: true
+        }
+      ]
     },
     {
       path: '/',

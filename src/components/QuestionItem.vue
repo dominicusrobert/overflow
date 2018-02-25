@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-on:click="moveToDetailQuestion">
+  <div class="card" v-on:click="moveToDetailQuestion(questionData.id)">
     <p>
       <strong>{{questionData.title}}</strong>
       <br>
@@ -12,8 +12,8 @@
 export default {
   props: ['questionData'],
   methods: {
-    moveToDetailQuestion () {
-      this.$router.push('/questionDetail')
+    moveToDetailQuestion (id) {
+      this.$router.push({name: 'QuestionDetail', params: { id: id }})
     }
   }
 }
