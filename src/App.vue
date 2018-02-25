@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <header>
-      <span>Vue.js PWA</span>
+      <span>The Overflow</span>
     </header>
     <main>
-      <img src="./assets/logo.png" alt="Vue.js PWA">
+      <img src="./assets/icon_overflow.jpg" alt="The Overflow">
       <router-view></router-view>
     </main>
   </div>

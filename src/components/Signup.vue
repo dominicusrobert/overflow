@@ -1,22 +1,23 @@
 <template>
-  <div>
-      <form>
-        <div class="field">
-          <label class="label">Email</label>
-          <div class="control">
-            <input class="input" type="text" placeholder="Email" v-model="email">
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Password</label>
-          <div class="control">
-            <input class="input" type="password" placeholder="Password" v-model="password">
-          </div>
-        </div>
+  <div id="signup">
+    <p class="help is-danger">{{error_message}}</p>
+      <div class="field">
+        <label class="label">Email</label>
         <div class="control">
-          <button class="button is-link" v-on:click="signup(email, password)">Submit</button>
+          <input class="input" type="text" placeholder="Email" v-model="email">
         </div>
-      </form>
+      </div>
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input class="input" type="password" placeholder="Password" v-model="password">
+        </div>
+      </div>
+      <div class="control">
+        <button class="button is-link" v-on:click="signup(email, password)" id="btn_link">
+          Signup
+        </button>
+      </div>
   </div>
 </template>
 
@@ -29,18 +30,25 @@ export default {
     return {
       email: '',
       password: '',
-      validEmail: false
+      error_message: ''
     }
   },
   methods: {
     signup (email, password) {
+      let self = this
+      if (email === '' || password === '') {
+        self.error_message = 'Please enter email and password'
+        return
+      }
       auth.createUserWithEmailAndPassword(email, password)
         .then(function () {
           swal('SUCCESS', 'Your account has been created', 'success')
             .then(() => {
+              self.error_message = ''
               console.log('Success')
             })
             .catch((err) => {
+              self.error_message = 'Signup failed please try again later'
               console.error(err)
             })
         })
@@ -53,5 +61,14 @@ export default {
 </script>
 
 <style>
-
+#signup{
+  margin: 24px;
+}
+#btn_link{
+  margin-top: 12px;
+  width: -webkit-fill-available;
+}
+label{
+  text-align: left;
+}
 </style>
