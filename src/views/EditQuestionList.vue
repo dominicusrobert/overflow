@@ -1,12 +1,12 @@
 <template>
   <div>
     <div v-if="!showDetail">
-      <QuestionItem v-for="(question, index) in listQuestion" 
+      <EditQuestionItem v-for="(question, index) in listQuestion" 
       :questionData="question" v-bind:key="listId[index]">
-      </QuestionItem>
+      </EditQuestionItem>
     </div>
     <div v-else>
-      <QuestionDetail></QuestionDetail>
+        <EditQuestion></EditQuestion>
     </div>
     <div v-if="!showDetail">
       <fab :actions="fabActions" 
@@ -20,9 +20,9 @@
 
 <script>
 import fab from 'vue-fab'
-import QuestionItem from '@/components/QuestionItem'
-import QuestionDetail from '@/views/QuestionDetail'
-import { questionCollection } from '../firebase'
+import EditQuestionItem from '@/components/EditQuestionItem'
+import EditQuestion from '@/views/EditQuestion'
+import { auth, questionCollection } from '../firebase'
 
 export default {
   data () {
@@ -45,8 +45,8 @@ export default {
     }
   },
   components: {
-    QuestionItem,
-    QuestionDetail,
+    EditQuestionItem,
+    EditQuestion,
     fab
   },
   watch: {
@@ -57,7 +57,7 @@ export default {
   },
   created () {
     let self = this
-    questionCollection.get()
+    questionCollection.where('authorEmail', '==', auth.currentUser.email).get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
           self.listId.push(doc.id)
@@ -76,7 +76,7 @@ export default {
       this.$router.push('/questionAdd')
     },
     moveToEditQuestion () {
-      this.$router.push('/questionEdit')
+      this.$router.go()
     }
   }
 }
