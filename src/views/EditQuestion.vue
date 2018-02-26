@@ -21,14 +21,15 @@
 </template>
 
 <script>
-import { questionCollection } from '../firebase'
+import { auth, questionCollection } from '../firebase'
 import swal from 'sweetalert'
 
 export default {
   data () {
     return {
       title: '',
-      question: ''
+      question: '',
+      contentAuthor: ''
     }
   },
   created () {
@@ -37,6 +38,7 @@ export default {
       .then((snapshot) => {
         this.title = snapshot.data().title
         this.question = snapshot.data().question
+        this.contentAuthor = snapshot.data().authorEmail
       })
       .catch((err) => {
         console.error(err)
@@ -44,6 +46,11 @@ export default {
   },
   methods: {
     saveQuestion (title, question) {
+      if (this.contentAuthor !== auth.currentUser.email) {
+        swal('FAILED', 'You are unauthorized', 'error')
+        return
+      }
+
       const self = this
       const id = this.$route.params.id
       questionCollection.doc(id).update({
@@ -57,6 +64,7 @@ export default {
             .catch((err) => console.error(err))
         })
         .catch(function (error) {
+          swal('FAILED', 'Failed to update Question', 'error')
           console.error('Error updating document: ', error)
         })
     }

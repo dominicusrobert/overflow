@@ -43,6 +43,7 @@ export default {
               })
           })
           .catch((err) => {
+            swal('FAILED', 'Failed to save Answer', 'error')
             console.error(err)
           })
       }

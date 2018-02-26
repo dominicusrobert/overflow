@@ -100,6 +100,7 @@ export default {
             })
         })
         .catch(function (error) {
+          swal('FAILED', 'Failed to delete Question', 'error')
           console.error('Error removing document: ', error)
         })
     }
