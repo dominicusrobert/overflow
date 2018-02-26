@@ -1,34 +1,85 @@
 <template>
   <div>
     <div class="columns is-mobile">
-      <div class="column is-one-fifth"  id="total_vote">
-        <span class="icon">
-        <i class="fas fa-chevron-up"></i>
-          </span>
-        <label>total</label>
-        <span class="icon">
+      <div class="column is-one-fifth" id="total_vote">
+        <span class="icon" v-on:click="upvote(detailQuestion.id)">
+          <i class="fas fa-chevron-up"></i>
+        </span>
+        <label>{{totalVote}}</label>
+        <span class="icon" v-on:click="downvote(detailQuestion.id)">
           <i class="fas fa-chevron-down"></i>
         </span>
       </div>
       <div class="column">
         <p>
-        <strong>{{detail.title}}</strong>
+        <strong>{{detailQuestion.title}}</strong>
         <br>
-        {{detail.question}}
+        {{detailQuestion.question}}
         </p>
       </div>
     </div>
-    <p id="author">{{detail.authorEmail}}</p>
+    <p id="author">{{detailQuestion.authorEmail}}</p>
   </div>
 </template>
 
 <script>
+import { auth, voteCollection } from '../firebase'
+import swal from 'sweetalert'
+
 export default {
-  props: ['detail']
+  data () {
+    return {
+      totalVote: 0
+    }
+  },
+  props: ['detailQuestion'],
+  created () {
+    let id = String(this.$route.params.id)
+    voteCollection.doc(id).get()
+      .then(doc => {
+        if (doc.exists) {
+          let documents = doc.data()
+          for (let key in documents) {
+            if (documents[key] === true) {
+              this.totalVote++
+            }
+          }
+        }
+      })
+  },
+  methods: {
+    upvote (id) {
+      this.update(id, true)
+    },
+    downvote (id) {
+      this.update(id, false)
+    },
+    update (id, value) {
+      const user = auth.currentUser
+      if (user) {
+        voteCollection.doc(id).get()
+          .then(doc => {
+            var usersUpdate = {}
+            usersUpdate[`${user.uid}`] = value
+            if (!doc.exists) {
+              return voteCollection.doc(id).set(usersUpdate)
+            } else {
+              return voteCollection.doc(id).update(usersUpdate)
+            }
+          })
+          .then(() => {
+            swal('SUCCESS VOTE', 'success')
+          })
+          .catch(err => {
+            console.log('Error getting document', err)
+          })
+      }
+    }
+  }
 }
 </script>
 
-<style>
+<style scoped>
 #total_vote{
   display: flex;
   justify-content: center;

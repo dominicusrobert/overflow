@@ -38,7 +38,7 @@ export default {
       if (user) {
         const authorEmail = user.email
         const createdDate = Date.now()
-        const id = String(createdDate).concat(authorEmail.substring(0, authorEmail.indexOf('@')))
+        const id = String(createdDate).concat(user.uid)
 
         questionCollection.doc(id).set({
           id: id,

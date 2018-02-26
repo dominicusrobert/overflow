@@ -27,7 +27,7 @@ export default {
       if (user) {
         const authorEmail = user.email
         const createdDate = Date.now()
-        const id = String(createdDate).concat(authorEmail.substring(0, authorEmail.indexOf('@')))
+        const id = String(createdDate).concat(user.uid)
 
         answerCollection.doc(id).set({
           id: id,
@@ -37,7 +37,7 @@ export default {
           created: createdDate
         })
           .then(() => {
-            swal('SUCCESS', 'Answer has benn save', 'success')
+            swal('SUCCESS', 'Answer has been save', 'success')
           })
           .catch((err) => {
             console.error(err)

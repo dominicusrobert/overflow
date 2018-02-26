@@ -1,11 +1,11 @@
 <template>
   <div>
-      <QuestionItemDetail v-bind:detail="detailData"/>
-      <div class="backgroundAnswer">
-        <QuestionItemDetailAnswer v-for="answer in answers" 
-        v-bind:answer="answer" v-bind:key="answer.id"/>
-      </div>
-      <QuestionItemReply></QuestionItemReply>
+    <QuestionItemDetail v-bind:detailQuestion="detailData"/>
+    <div class="backgroundAnswer">
+      <QuestionItemDetailAnswer v-for="answer in answers" 
+      v-bind:answer="answer" v-bind:key="answer.id"/>
+    </div>
+    <QuestionItemReply></QuestionItemReply>
   </div>
 </template>
 
@@ -18,7 +18,13 @@ import { questionCollection, answerCollection } from '../firebase'
 export default {
   data () {
     return {
-      detailData: {},
+      detailData: {
+        authorEmail: '',
+        created: 0,
+        question: '',
+        shortDesc: '',
+        title: ''
+      },
       answers: []
     }
   },
@@ -35,6 +41,7 @@ export default {
     ]
     Promise.all(arrPromise)
       .then((snapshot) => {
+        console.log('log snapshot', snapshot[0].data())
         this.detailData = snapshot[0].data()
         snapshot[1].forEach(doc => {
           this.answers.push(doc.data())
