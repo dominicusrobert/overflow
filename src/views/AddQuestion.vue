@@ -37,7 +37,6 @@ export default {
       const authorEmail = localStorage.getItem('email')
       const createdDate = Date.now()
       const id = String(createdDate)
-        .concat('.')
         .concat(authorEmail.substring(0, authorEmail.indexOf('@')))
 
       var docRef = questionCollection.doc(id)

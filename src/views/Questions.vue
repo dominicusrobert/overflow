@@ -1,21 +1,22 @@
 <template>
   <div>
-    <div class="button is-link" v-on:click="moveToAddQuestion">
-      Add new Question
-    </div>
     <div v-if="!showDetail">
+      <div class="button is-link" v-on:click="moveToAddQuestion">
+        Add new Question
+      </div>
       <QuestionItem v-for="(question, index) in listQuestion" 
       :questionData="question" v-bind:key="listId[index]">
       </QuestionItem>
     </div>
     <div v-else>
-      <router-view></router-view>
+      <QuestionDetail></QuestionDetail>
     </div>
   </div>
 </template>
 
 <script>
 import QuestionItem from '@/components/QuestionItem'
+import QuestionDetail from '@/views/QuestionDetail'
 import { questionCollection } from '../firebase'
 
 export default {
@@ -27,26 +28,29 @@ export default {
     }
   },
   components: {
-    QuestionItem
+    QuestionItem,
+    QuestionDetail
   },
   watch: {
     '$route.params.id' () {
+      console.log('watch')
       let params = this.$route.params.id
-      if (params !== undefined && params !== '') {
-        this.showDetail = true
-      } else {
-        this.showDetail = false
-      }
+      this.showDetail = params !== undefined && params !== ''
     }
   },
   created () {
     let self = this
+    console.log('created out')
     questionCollection.get()
       .then((snapshot) => {
+        console.log('created')
         snapshot.forEach((doc) => {
           self.listId.push(doc.id)
           self.listQuestion.push(doc.data())
         })
+        if (self.$route.params.id !== undefined && self.$route.params.id !== '') {
+          this.showDetail = true
+        }
       })
       .catch((err) => {
         console.log('Error getting documents', err)

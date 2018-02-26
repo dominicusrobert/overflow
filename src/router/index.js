@@ -32,7 +32,7 @@ export default new Router({
     },
     {
       path: '/questions',
-      // name: 'Questions',
+      name: 'Questions',
       component: Questions,
       beforeEnter: (to, from, next) => {
         auth.onAuthStateChanged(function (user) {
