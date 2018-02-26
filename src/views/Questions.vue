@@ -33,17 +33,14 @@ export default {
   },
   watch: {
     '$route.params.id' () {
-      console.log('watch')
       let params = this.$route.params.id
       this.showDetail = params !== undefined && params !== ''
     }
   },
   created () {
     let self = this
-    console.log('created out')
     questionCollection.get()
       .then((snapshot) => {
-        console.log('created')
         snapshot.forEach((doc) => {
           self.listId.push(doc.id)
           self.listQuestion.push(doc.data())

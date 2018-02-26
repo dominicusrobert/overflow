@@ -11,20 +11,23 @@
         </span>
       </div>
       <div class="column">
-        <p>answer</p>
+        <p>{{answer.answer}}</p>
       </div>
     </div>
-    <p id="author">Author Email</p>
+    <p id="author">{{answer.authorEmail}}</p>
   </div>
 </template>
 
 <script>
 export default {
-
+  props: ['answer']
 }
 </script>
 
 <style scoped>
+.card{
+  padding: 12px;
+}
 #answer{
   margin: 12px
 }

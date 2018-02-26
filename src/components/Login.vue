@@ -43,7 +43,6 @@ export default {
       auth.signInWithEmailAndPassword(email, password)
         .then(function () {
           self.error_message = ''
-          localStorage.setItem('email', email)
           self.$router.push('/questions')
         })
         .catch(function (error) {

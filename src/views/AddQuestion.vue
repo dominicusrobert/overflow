@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { questionCollection } from '../firebase'
+import { auth, questionCollection } from '../firebase'
 import swal from 'sweetalert'
 
 export default {
@@ -33,34 +33,30 @@ export default {
   },
   methods: {
     saveQuestion (title, question) {
-      let self = this
-      const authorEmail = localStorage.getItem('email')
-      const createdDate = Date.now()
-      const id = String(createdDate)
-        .concat(authorEmail.substring(0, authorEmail.indexOf('@')))
+      const self = this
+      const user = auth.currentUser
+      if (user) {
+        const authorEmail = user.email
+        const createdDate = Date.now()
+        const id = String(createdDate).concat(authorEmail.substring(0, authorEmail.indexOf('@')))
 
-      var docRef = questionCollection.doc(id)
-      docRef.set({
-        id: id,
-        authorEmail: authorEmail,
-        created: createdDate,
-        title: title,
-        question: question,
-        shortDesc: question.substring(0, 40).concat('...')
-      })
-        .then(() => {
-          swal('SUCCESS', 'Question has been created', 'success')
-            .then(() => {
-              console.log('Success')
-              self.$router.push('/questions')
-            })
-            .catch((err) => {
-              console.error(err)
-            })
+        questionCollection.doc(id).set({
+          id: id,
+          authorEmail: authorEmail,
+          created: createdDate,
+          title: title,
+          question: question,
+          shortDesc: question.substring(0, 40).concat('...')
         })
-        .catch((err) => {
-          console.error(err)
-        })
+          .then(() => {
+            swal('SUCCESS', 'Question has been created', 'success')
+              .then(() => self.$router.push('/questions'))
+              .catch((err) => console.error(err))
+          })
+          .catch((err) => {
+            console.error(err)
+          })
+      }
     }
   }
 }

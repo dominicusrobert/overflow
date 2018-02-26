@@ -12,19 +12,19 @@
       </div>
       <div class="column">
         <p>
-        <strong>title</strong>
+        <strong>{{detail.title}}</strong>
         <br>
-        short_description
+        {{detail.question}}
         </p>
       </div>
     </div>
-    <p id="author">Author Email</p>
+    <p id="author">{{detail.authorEmail}}</p>
   </div>
 </template>
 
 <script>
 export default {
-
+  props: ['detail']
 }
 </script>
 
