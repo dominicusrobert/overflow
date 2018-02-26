@@ -28,16 +28,19 @@ export default {
         const authorEmail = user.email
         const createdDate = Date.now()
         const id = String(createdDate).concat(user.uid)
-
-        answerCollection.doc(id).set({
+        const newAnswer = {
           id: id,
           authorEmail: authorEmail,
           questionId: self.$route.params.id,
           answer: answer,
           created: createdDate
-        })
+        }
+        answerCollection.doc(id).set(newAnswer)
           .then(() => {
             swal('SUCCESS', 'Answer has been save', 'success')
+              .then(() => {
+                this.$emit('updateAnswers', newAnswer)
+              })
           })
           .catch((err) => {
             console.error(err)

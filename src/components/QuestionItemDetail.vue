@@ -68,6 +68,11 @@ export default {
             }
           })
           .then(() => {
+            if (value) {
+              this.totalVote++
+            } else {
+              this.totalVote--
+            }
             swal('SUCCESS VOTE', 'success')
           })
           .catch(err => {

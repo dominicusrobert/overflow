@@ -5,7 +5,7 @@
       <QuestionItemDetailAnswer v-for="answer in answers" 
       v-bind:answer="answer" v-bind:key="answer.id"/>
     </div>
-    <QuestionItemReply></QuestionItemReply>
+    <QuestionItemReply v-on:updateAnswers="updateAnswer"></QuestionItemReply>
   </div>
 </template>
 
@@ -41,7 +41,6 @@ export default {
     ]
     Promise.all(arrPromise)
       .then((snapshot) => {
-        console.log('log snapshot', snapshot[0].data())
         this.detailData = snapshot[0].data()
         snapshot[1].forEach(doc => {
           this.answers.push(doc.data())
@@ -50,6 +49,11 @@ export default {
       .catch((err) => {
         console.log('Error getting documents', err)
       })
+  },
+  methods: {
+    updateAnswer (e) {
+      this.answers.push(e)
+    }
   }
 }
 </script>

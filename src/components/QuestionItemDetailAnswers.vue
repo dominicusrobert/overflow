@@ -30,7 +30,7 @@ export default {
   },
   props: ['answer'],
   created () {
-    let id = String(this.answer.questionId)
+    let id = String(this.answer.id)
     voteCollection.doc(id).get()
       .then(doc => {
         if (doc.exists) {
@@ -64,6 +64,11 @@ export default {
             }
           })
           .then(() => {
+            if (value) {
+              this.totalVote++
+            } else {
+              this.totalVote--
+            }
             swal('SUCCESS VOTE', 'success')
           })
           .catch(err => {
