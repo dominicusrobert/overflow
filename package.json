@@ -16,6 +16,7 @@
     "firebase-admin": "^5.9.0",
     "sweetalert": "^2.1.0",
     "vue": "^2.5.2",
+    "vue-fab": "^2.1.2",
     "vue-router": "^3.0.1",
     "vuefire": "^1.4.5"
   },

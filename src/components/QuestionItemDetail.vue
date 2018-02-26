@@ -3,11 +3,11 @@
     <div class="columns is-mobile">
       <div class="column is-one-fifth" id="total_vote">
         <span class="icon" v-on:click="upvote(detailQuestion.id)">
-          <i class="fas fa-chevron-up"></i>
+          <i class="material-icons">keyboard_arrow_up</i>
         </span>
         <label>{{totalVote}}</label>
         <span class="icon" v-on:click="downvote(detailQuestion.id)">
-          <i class="fas fa-chevron-down"></i>
+          <i class="material-icons">keyboard_arrow_down</i>
         </span>
       </div>
       <div class="column">
@@ -34,18 +34,7 @@ export default {
   },
   props: ['detailQuestion'],
   created () {
-    let id = String(this.$route.params.id)
-    voteCollection.doc(id).get()
-      .then(doc => {
-        if (doc.exists) {
-          let documents = doc.data()
-          for (let key in documents) {
-            if (documents[key] === true) {
-              this.totalVote++
-            }
-          }
-        }
-      })
+    this.getVote()
   },
   methods: {
     upvote (id) {
@@ -54,7 +43,22 @@ export default {
     downvote (id) {
       this.update(id, false)
     },
+    getVote () {
+      let id = String(this.$route.params.id)
+      voteCollection.doc(id).get()
+        .then(doc => {
+          if (doc.exists) {
+            let documents = doc.data()
+            for (let key in documents) {
+              if (documents[key] === true) {
+                this.totalVote++
+              }
+            }
+          }
+        })
+    },
     update (id, value) {
+      const self = this
       const user = auth.currentUser
       if (user) {
         voteCollection.doc(id).get()
@@ -68,12 +72,10 @@ export default {
             }
           })
           .then(() => {
-            if (value) {
-              this.totalVote++
-            } else {
-              this.totalVote--
-            }
             swal('SUCCESS VOTE', 'success')
+              .then((data) => {
+                self.getVote()
+              })
           })
           .catch(err => {
             console.log('Error getting document', err)

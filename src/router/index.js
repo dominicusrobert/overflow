@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Auth from '@/views/Auth'
 import AddQuestion from '@/views/AddQuestion'
+import EditQuestion from '@/views/EditQuestion'
 import Questions from '@/views/Questions'
 import QuestionDetail from '@/views/QuestionDetail'
 import { auth } from '../firebase'
@@ -34,6 +35,28 @@ export default new Router({
       path: '/questions',
       name: 'Questions',
       component: Questions,
+      beforeEnter: (to, from, next) => {
+        auth.onAuthStateChanged(function (user) {
+          if (user) {
+            next()
+          } else {
+            this.a.push('/authorization')
+          }
+        })
+      },
+      children: [
+        {
+          path: ':id',
+          component: QuestionDetail,
+          name: 'QuestionDetail',
+          props: true
+        }
+      ]
+    },
+    {
+      path: '/questionEdit',
+      name: 'EditQuestion',
+      component: EditQuestion,
       beforeEnter: (to, from, next) => {
         auth.onAuthStateChanged(function (user) {
           if (user) {

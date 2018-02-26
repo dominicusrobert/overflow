@@ -1,9 +1,6 @@
 <template>
   <div>
     <div v-if="!showDetail">
-      <div class="button is-link" v-on:click="moveToAddQuestion">
-        Add new Question
-      </div>
       <QuestionItem v-for="(question, index) in listQuestion" 
       :questionData="question" v-bind:key="listId[index]">
       </QuestionItem>
@@ -11,10 +8,16 @@
     <div v-else>
       <QuestionDetail></QuestionDetail>
     </div>
+    <div v-if="!showDetail">
+      <fab :actions="fabActions" 
+      :bg-color="bgColor"
+      v-on:click="moveToAddQuestion"></fab>
+    </div>
   </div>
 </template>
 
 <script>
+import fab from 'vue-fab'
 import QuestionItem from '@/components/QuestionItem'
 import QuestionDetail from '@/views/QuestionDetail'
 import { questionCollection } from '../firebase'
@@ -24,12 +27,25 @@ export default {
     return {
       listId: [],
       listQuestion: [],
-      showDetail: false
+      showDetail: false,
+      bgColor: '#778899',
+      position: 'top-right',
+      fabActions: [
+        {
+          name: 'edit',
+          icon: 'edit'
+        },
+        {
+          name: 'create',
+          icon: 'add'
+        }
+      ]
     }
   },
   components: {
     QuestionItem,
-    QuestionDetail
+    QuestionDetail,
+    fab
   },
   watch: {
     '$route.params.id' () {

@@ -3,7 +3,8 @@
     <QuestionItemDetail v-bind:detailQuestion="detailData"/>
     <div class="backgroundAnswer">
       <QuestionItemDetailAnswer v-for="answer in answers" 
-      v-bind:answer="answer" v-bind:key="answer.id"/>
+      v-bind:answer="answer" v-bind:key="answer.id"
+      v-on:deleteAnswers="deleteAnswer"/>
     </div>
     <QuestionItemReply v-on:updateAnswers="updateAnswer"></QuestionItemReply>
   </div>
@@ -53,6 +54,13 @@ export default {
   methods: {
     updateAnswer (e) {
       this.answers.push(e)
+    },
+    deleteAnswer (e) {
+      this.answers.forEach((item, index) => {
+        if (item.id === e) {
+          this.answers.splice(index, 1)
+        }
+      })
     }
   }
 }
