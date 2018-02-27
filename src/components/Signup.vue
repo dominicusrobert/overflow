@@ -5,17 +5,19 @@
     <div class="field">
       <label class="label">Email</label>
       <div class="control">
-        <input class="input" type="text" placeholder="Email" v-model="email">
+        <input class="input" type="text" placeholder="Email" 
+        v-bind="email" v-on:input="clickUpdateEmail">
       </div>
     </div>
     <div class="field">
       <label class="label">Password</label>
       <div class="control">
-        <input class="input" type="password" placeholder="Password" v-model="password">
+        <input class="input" type="password" placeholder="Password" 
+        v-bind="password" v-on:input="clickUpdatePassword">
       </div>
     </div>
     <div class="control">
-      <button class="button is-link" v-on:click="signup(email, password)" id="btn_link">
+      <button class="button is-link" v-on:click="clickSignup({email, password})" id="btn_link">
         Signup
       </button>
     </div>
@@ -24,7 +26,8 @@
 </template>
 
 <script>
-import { auth } from '../firebase'
+import {mapState, mapActions} from 'vuex'
+import signupModule from '../modules/signup/index'
 import Loading from '@/components/Loading'
 import swal from 'sweetalert'
 
@@ -33,40 +36,60 @@ export default {
     return {
       email: '',
       password: '',
-      error_message: ''
+      error_message: '',
+      status_signup: null
     }
   },
   components: {
     Loading
   },
-  methods: {
-    signup (email, password) {
-      let self = this
-      if (email === '' || password === '') {
-        self.error_message = 'Please enter email and password'
-        return
+  created () {
+    const store = this.$store
+    if (!(store && store.state && store.state[name])) {
+      store.registerModule(name, signupModule)
+    } else {
+      console.log('reusing module: '.concat(name))
+    }
+  },
+  computed: {
+    ...mapState(name, {
+      state_email: state => {
+        this.email = state.email
+        return state.email
+      },
+      state_error_message: state => {
+        this.error_message = state.error_message
+        return state.error_message
+      },
+      state_password: state => {
+        this.password = state.password
+        return state.password
+      },
+      state_signup_status: state => {
+        this.status_signup = state.signup_status
+        return state.signup_status
       }
-
+    })
+  },
+  methods: {
+    ...mapActions(name, ['updateEmail', 'updatePassword', 'signup']),
+    clickSignup (payload) {
       this.$refs.loading.showDialog()
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(function () {
-          swal('SUCCESS', 'Your account has been created', 'success')
-            .then(() => {
-              self.$refs.loading.hideDialog()
-              self.error_message = ''
-              console.log('Success')
-            })
-            .catch((err) => {
-              self.$refs.loading.hideDialog()
-              self.error_message = 'Signup failed please try again later'
-              console.error(err)
-            })
-        })
-        .catch(function (error) {
-          self.$refs.loading.hideDialog()
-          self.error_message = 'Signup failed please try again later'
-          console.error(error)
-        })
+      this.signup(payload)
+    },
+    clickUpdateEmail (e) {
+      this.updateEmail(e.target.value)
+    },
+    clickUpdatePassword (e) {
+      this.updatePassword(e.target.value)
+    }
+  },
+  watch: {
+    status_signup (val) {
+      this.$refs.loading.hideDialog()
+      if (val) {
+        swal('SUCCESS', 'Your account has been created', 'success')
+      }
     }
   }
 }
