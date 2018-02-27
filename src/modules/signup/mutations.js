@@ -6,34 +6,27 @@ const successUpdatePassword = (state, payload) => {
   state.password = payload
 }
 
-const resetStatus = (state, payload) => {
-  state.login_status = null
-}
-
-const successSignin = (state, payload) => {
+const successSignup = (state, payload) => {
   state.email = payload.email
-  state.password = payload.password
   state.error_message = ''
-  state.login_status = true
+  state.signup_status = true
 }
 
-const failedSignin = (state, payload) => {
+const failedSignup = (state, payload) => {
   state.email = ''
-  state.password = ''
   state.error_message = 'Login failed please make sure you have enter valid email and password'
-  state.login_status = false
+  state.signup_status = false
 }
 
 const invalidRequest = (state, payload) => {
-  state.login_status = false
   state.error_message = 'Please enter email and password'
+  state.signup_status = false
 }
 
 export {
   successUpdateEmail,
   successUpdatePassword,
-  resetStatus,
-  successSignin,
-  failedSignin,
+  successSignup,
+  failedSignup,
   invalidRequest
 }

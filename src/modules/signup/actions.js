@@ -8,28 +8,24 @@ const updatePassword = ({commit, state}, payload) => {
   commit('successUpdatePassword', payload)
 }
 
-const resetStatusAction = ({commit, state}, payload) => {
-  commit('resetStatus', payload)
-}
-
-const login = ({commit, state}, payload) => {
+const signup = ({commit, state}, payload) => {
   if (payload.email === '' || payload.password === '') {
     commit('invalidRequest', payload)
     return
   }
-  auth.signInWithEmailAndPassword(payload.email, payload.password)
+
+  auth.createUserWithEmailAndPassword(payload.email, payload.password)
     .then(function () {
-      commit('successSignin', payload)
+      commit('successSignup', payload)
     })
     .catch(function (error) {
       console.error(error)
-      commit('failedSignin', payload)
+      commit('failedSignup', payload)
     })
 }
 
 export {
-  resetStatusAction,
   updateEmail,
   updatePassword,
-  login
+  signup
 }

@@ -26,9 +26,12 @@
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
+// import {mapState, mapActions} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import loginModule from '../modules/login/index'
 import Loading from '@/components/Loading'
+
+const name = 'LoginModule'
 
 export default {
   components: {
@@ -43,12 +46,17 @@ export default {
     }
   },
   computed: {
-    ...mapState(name, {
-      email: state => state.email,
-      uid: state => state.uid,
-      error_message: state => state.error_message,
-      password: state => state.password,
-      login_status: state => state.login_status
+    // ...mapState(name, {
+    //   email: state => state.email,
+    //   error_message: state => state.error_message,
+    //   password: state => state.password,
+    //   login_status: state => state.login_status
+    // }),
+    ...mapGetters(name, {
+      email: 'getEmail',
+      error_message: 'getError',
+      password: 'getPassword',
+      login_status: 'getStatus'
     }),
     user_email: {
       get () { return this.email },
@@ -60,17 +68,20 @@ export default {
     }
   },
   methods: {
-    ...mapActions(name, ['updateEmail', 'updatePassword', 'login']),
+    ...mapActions(name, ['resetStatusAction', 'updateEmail', 'updatePassword', 'login']),
     clickLogin (payloadData) {
       this.$refs.loading.showDialog()
+      this.resetStatusAction()
       this.login(payloadData)
     }
   },
   watch: {
     login_status (val) {
-      this.$refs.loading.hideDialog()
-      if (val) {
-        this.$router.push('/questions')
+      if (val !== null) {
+        this.$refs.loading.hideDialog()
+        if (val) {
+          this.$router.push('/questions')
+        }
       }
     }
   }

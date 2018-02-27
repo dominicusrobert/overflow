@@ -37,7 +37,7 @@ export default new Router({
       name: 'Questions',
       component: Questions,
       beforeEnter: (to, from, next) => {
-        auth.onAuthStateChanged(function (user) {
+        auth.onAuthStateChanged((user) => {
           if (user) {
             next()
           } else {
