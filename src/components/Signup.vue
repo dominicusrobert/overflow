@@ -1,23 +1,24 @@
 <template>
   <div id="signup">
     <img src="../assets/icon_overflow.jpg" alt="The Overflow">
-    <p class="help is-danger">{{error_message}}</p>
+    <p class="help is-danger">{{state_error_message}}</p>
     <div class="field">
       <label class="label">Email</label>
       <div class="control">
         <input class="input" type="text" placeholder="Email" 
-        v-bind="email" v-on:input="clickUpdateEmail">
+        v-on:bind="state_email" v-on:input="clickUpdateEmail">
       </div>
     </div>
     <div class="field">
       <label class="label">Password</label>
       <div class="control">
         <input class="input" type="password" placeholder="Password" 
-        v-bind="password" v-on:input="clickUpdatePassword">
+        v-on:bind="state_password" v-on:input="clickUpdatePassword">
       </div>
     </div>
     <div class="control">
-      <button class="button is-link" v-on:click="clickSignup({email, password})" id="btn_link">
+      <button class="button is-link" id="btn_link"
+        v-on:click="clickSignup({email:state_email, password:state_password})">
         Signup
       </button>
     </div>
@@ -31,15 +32,10 @@ import signupModule from '../modules/signup/index'
 import Loading from '@/components/Loading'
 import swal from 'sweetalert'
 
+// Module name that ragistered in store.js
+const name = 'SignupModule'
+
 export default {
-  data () {
-    return {
-      email: '',
-      password: '',
-      error_message: '',
-      status_signup: null
-    }
-  },
   components: {
     Loading
   },
@@ -53,28 +49,17 @@ export default {
   },
   computed: {
     ...mapState(name, {
-      state_email: state => {
-        this.email = state.email
-        return state.email
-      },
-      state_error_message: state => {
-        this.error_message = state.error_message
-        return state.error_message
-      },
-      state_password: state => {
-        this.password = state.password
-        return state.password
-      },
-      state_signup_status: state => {
-        this.status_signup = state.signup_status
-        return state.signup_status
-      }
+      state_email: state => state.email,
+      state_error_message: state => state.error_message,
+      state_password: state => state.password,
+      state_signup_status: state => state.signup_status
     })
   },
   methods: {
-    ...mapActions(name, ['updateEmail', 'updatePassword', 'signup']),
+    ...mapActions(name, ['resetStatusAction', 'updateEmail', 'updatePassword', 'signup']),
     clickSignup (payload) {
       this.$refs.loading.showDialog()
+      this.resetStatusAction()
       this.signup(payload)
     },
     clickUpdateEmail (e) {
@@ -85,7 +70,7 @@ export default {
     }
   },
   watch: {
-    status_signup (val) {
+    state_signup_status (val) {
       this.$refs.loading.hideDialog()
       if (val) {
         swal('SUCCESS', 'Your account has been created', 'success')
