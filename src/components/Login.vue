@@ -19,11 +19,13 @@
         Login
       </button>
     </div>
+    <Loading ref="loading"></Loading>
   </div>
 </template>
 
 <script>
 import { auth } from '../firebase'
+import Loading from '@/components/Loading'
 
 export default {
   data () {
@@ -33,6 +35,9 @@ export default {
       error_message: ''
     }
   },
+  components: {
+    Loading
+  },
   methods: {
     login (email, password) {
       let self = this
@@ -40,12 +45,16 @@ export default {
         this.error_message = 'Please enter email and password'
         return
       }
+
+      this.$refs.loading.showDialog()
       auth.signInWithEmailAndPassword(email, password)
         .then(function () {
+          self.$refs.loading.hideDialog()
           self.error_message = ''
           self.$router.push('/questions')
         })
         .catch(function (error) {
+          self.$refs.loading.hideDialog()
           self.error_message = 'Login failed please make sure you have enter valid email and password'
           console.error(error)
         })

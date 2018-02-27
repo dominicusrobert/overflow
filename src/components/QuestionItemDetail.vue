@@ -19,11 +19,13 @@
       </div>
     </div>
     <p id="author">{{detailQuestion.authorEmail}}</p>
+    <Loading ref="loading"></Loading>
   </div>
 </template>
 
 <script>
 import { auth, voteCollection } from '../firebase'
+import Loading from '@/components/Loading'
 import swal from 'sweetalert'
 
 export default {
@@ -32,8 +34,11 @@ export default {
       totalVote: 0
     }
   },
+  components: {
+    Loading
+  },
   props: ['detailQuestion'],
-  created () {
+  mounted () {
     this.getVote()
   },
   methods: {
@@ -44,9 +49,13 @@ export default {
       this.update(id, false)
     },
     getVote () {
+      let self = this
       let id = String(this.$route.params.id)
+
+      this.$refs.loading.showDialog()
       voteCollection.doc(id).get()
         .then(doc => {
+          self.$refs.loading.hideDialog()
           if (doc.exists) {
             let documents = doc.data()
             for (let key in documents) {
@@ -61,6 +70,7 @@ export default {
       const self = this
       const user = auth.currentUser
       if (user) {
+        this.$refs.loading.showDialog()
         voteCollection.doc(id).get()
           .then(doc => {
             var usersUpdate = {}
@@ -72,12 +82,14 @@ export default {
             }
           })
           .then(() => {
+            self.$refs.loading.hideDialog()
             swal('SUCCESS VOTE', 'success')
               .then((data) => {
                 self.getVote()
               })
           })
           .catch(err => {
+            self.$refs.loading.hideDialog()
             console.log('Error getting document', err)
           })
       }

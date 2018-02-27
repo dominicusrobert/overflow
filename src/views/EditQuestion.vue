@@ -17,11 +17,13 @@
         Save
       </button>
     </div>
+    <Loading ref="loading"></Loading>
   </div>
 </template>
 
 <script>
 import { auth, questionCollection } from '../firebase'
+import Loading from '@/components/Loading'
 import swal from 'sweetalert'
 
 export default {
@@ -32,15 +34,22 @@ export default {
       contentAuthor: ''
     }
   },
-  created () {
+  components: {
+    Loading
+  },
+  mounted () {
+    const self = this
     const id = this.$route.params.id
+    this.$refs.loading.showDialog()
     questionCollection.doc(id).get()
       .then((snapshot) => {
+        self.$refs.loading.hideDialog()
         this.title = snapshot.data().title
         this.question = snapshot.data().question
         this.contentAuthor = snapshot.data().authorEmail
       })
       .catch((err) => {
+        self.$refs.loading.hideDialog()
         console.error(err)
       })
   },
@@ -53,17 +62,20 @@ export default {
 
       const self = this
       const id = this.$route.params.id
+      this.$refs.loading.showDialog()
       questionCollection.doc(id).update({
         title: title,
         question: question,
         shortDesc: question.substring(0, 40).concat('...')
       })
         .then(function () {
+          self.$refs.loading.hideDialog()
           swal('SUCCESS', 'Question has been updated', 'success')
             .then(() => self.$router.push('/questionEdit'))
             .catch((err) => console.error(err))
         })
         .catch(function (error) {
+          self.$refs.loading.hideDialog()
           swal('FAILED', 'Failed to update Question', 'error')
           console.error('Error updating document: ', error)
         })

@@ -2,28 +2,30 @@
   <div id="signup">
     <img src="../assets/icon_overflow.jpg" alt="The Overflow">
     <p class="help is-danger">{{error_message}}</p>
-      <div class="field">
-        <label class="label">Email</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="Email" v-model="email">
-        </div>
-      </div>
-      <div class="field">
-        <label class="label">Password</label>
-        <div class="control">
-          <input class="input" type="password" placeholder="Password" v-model="password">
-        </div>
-      </div>
+    <div class="field">
+      <label class="label">Email</label>
       <div class="control">
-        <button class="button is-link" v-on:click="signup(email, password)" id="btn_link">
-          Signup
-        </button>
+        <input class="input" type="text" placeholder="Email" v-model="email">
       </div>
+    </div>
+    <div class="field">
+      <label class="label">Password</label>
+      <div class="control">
+        <input class="input" type="password" placeholder="Password" v-model="password">
+      </div>
+    </div>
+    <div class="control">
+      <button class="button is-link" v-on:click="signup(email, password)" id="btn_link">
+        Signup
+      </button>
+    </div>
+    <Loading ref="loading"></Loading>
   </div>
 </template>
 
 <script>
 import { auth } from '../firebase'
+import Loading from '@/components/Loading'
 import swal from 'sweetalert'
 
 export default {
@@ -34,6 +36,9 @@ export default {
       error_message: ''
     }
   },
+  components: {
+    Loading
+  },
   methods: {
     signup (email, password) {
       let self = this
@@ -41,19 +46,25 @@ export default {
         self.error_message = 'Please enter email and password'
         return
       }
+
+      this.$refs.loading.showDialog()
       auth.createUserWithEmailAndPassword(email, password)
         .then(function () {
           swal('SUCCESS', 'Your account has been created', 'success')
             .then(() => {
+              self.$refs.loading.hideDialog()
               self.error_message = ''
               console.log('Success')
             })
             .catch((err) => {
+              self.$refs.loading.hideDialog()
               self.error_message = 'Signup failed please try again later'
               console.error(err)
             })
         })
         .catch(function (error) {
+          self.$refs.loading.hideDialog()
+          self.error_message = 'Signup failed please try again later'
           console.error(error)
         })
     }

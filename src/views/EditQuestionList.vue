@@ -15,6 +15,7 @@
       @edit="moveToEditQuestion"
       v-on:click="moveToAddQuestion"></fab>
     </div>
+    <Loading ref="loading"></Loading>
   </div>
 </template>
 
@@ -22,7 +23,9 @@
 import fab from 'vue-fab'
 import EditQuestionItem from '@/components/EditQuestionItem'
 import EditQuestion from '@/views/EditQuestion'
+import Loading from '@/components/Loading'
 import { auth, questionCollection } from '../firebase'
+import swal from 'sweetalert'
 
 export default {
   data () {
@@ -47,7 +50,8 @@ export default {
   components: {
     EditQuestionItem,
     EditQuestion,
-    fab
+    fab,
+    Loading
   },
   watch: {
     '$route.params.id' () {
@@ -55,11 +59,13 @@ export default {
       this.showDetail = params !== undefined && params !== ''
     }
   },
-  created () {
+  mounted () {
     let self = this
+    this.$refs.loading.showDialog()
     questionCollection.where('authorEmail', '==', auth.currentUser.email).get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
+          self.$refs.loading.hideDialog()
           self.listId.push(doc.id)
           self.listQuestion.push(doc.data())
         })
@@ -68,6 +74,8 @@ export default {
         }
       })
       .catch((err) => {
+        self.$refs.loading.hideDialog()
+        swal('FAILED', 'Failed to get questions', 'error')
         console.log('Error getting documents', err)
       })
   },
