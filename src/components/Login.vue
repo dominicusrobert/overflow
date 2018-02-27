@@ -31,6 +31,7 @@ import {mapGetters, mapActions} from 'vuex'
 import loginModule from '../modules/login/index'
 import Loading from '@/components/Loading'
 
+// Module name that ragistered in store.js
 const name = 'LoginModule'
 
 export default {

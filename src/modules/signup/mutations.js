@@ -6,6 +6,10 @@ const successUpdatePassword = (state, payload) => {
   state.password = payload
 }
 
+const resetStatus = (state, payload) => {
+  state.signup_status = null
+}
+
 const successSignup = (state, payload) => {
   state.email = payload.email
   state.error_message = ''
@@ -26,6 +30,7 @@ const invalidRequest = (state, payload) => {
 export {
   successUpdateEmail,
   successUpdatePassword,
+  resetStatus,
   successSignup,
   failedSignup,
   invalidRequest
