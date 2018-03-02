@@ -13,7 +13,7 @@ export default {
   props: ['questionData'],
   methods: {
     moveToDetailQuestion (id) {
-      this.$router.push({name: 'QuestionDetail', params: { id: id }})
+      this.$router.push({name: 'EditQuestion', params: { id: id }})
     }
   }
 }

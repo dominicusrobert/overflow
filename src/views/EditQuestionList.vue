@@ -1,12 +1,12 @@
 <template>
   <div>
     <div v-if="!showDetail">
-      <QuestionItem v-for="(question, index) in listQuestion" 
+      <EditQuestionItem v-for="(question, index) in listQuestion" 
       :questionData="question" v-bind:key="listId[index]">
-      </QuestionItem>
+      </EditQuestionItem>
     </div>
     <div v-else>
-      <QuestionDetail></QuestionDetail>
+        <EditQuestion></EditQuestion>
     </div>
     <div v-if="!showDetail">
       <fab :actions="fabActions" 
@@ -21,10 +21,10 @@
 
 <script>
 import fab from 'vue-fab'
-import QuestionItem from '@/components/QuestionItem'
-import QuestionDetail from '@/views/QuestionDetail'
-import { questionCollection } from '../firebase'
+import EditQuestionItem from '@/components/EditQuestionItem'
+import EditQuestion from '@/views/EditQuestion'
 import Loading from '@/components/Loading'
+import { auth, questionCollection } from '../firebase'
 import swal from 'sweetalert'
 
 export default {
@@ -48,8 +48,8 @@ export default {
     }
   },
   components: {
-    QuestionItem,
-    QuestionDetail,
+    EditQuestionItem,
+    EditQuestion,
     fab,
     Loading
   },
@@ -62,10 +62,10 @@ export default {
   mounted () {
     let self = this
     this.$refs.loading.showDialog()
-    questionCollection.get()
+    questionCollection.where('authorEmail', '==', auth.currentUser.email).get()
       .then((snapshot) => {
-        self.$refs.loading.hideDialog()
         snapshot.forEach((doc) => {
+          self.$refs.loading.hideDialog()
           self.listId.push(doc.id)
           self.listQuestion.push(doc.data())
         })
@@ -84,7 +84,7 @@ export default {
       this.$router.push('/questionAdd')
     },
     moveToEditQuestion () {
-      this.$router.push('/questionEdit')
+      this.$router.go()
     }
   }
 }

@@ -1,6 +1,29 @@
 # overflow
 
-> A Vue.js project
+Web application for a simple question-answer blog
+
+#
+#
+
+Blog application using : 
+```diff
+1. Vue CLI (Progressive Web Application)
+  using : 
+    - routing
+    - props and emit
+    - components
+
+2. Firebase
+   using : 
+    - email Authentication (login, signup and verification)
+    - firebase firestore
+
+3. ESLint
+
+```
+
+# 
+
 
 ## Build Setup
 

@@ -17,10 +17,15 @@
         Save
       </button>
     </div>
+    <Loading ref="loading"></Loading>
   </div>
 </template>
 
 <script>
+import { auth, questionCollection } from '../firebase'
+import Loading from '@/components/Loading'
+import swal from 'sweetalert'
+
 export default {
   data () {
     return {
@@ -28,9 +33,39 @@ export default {
       question: ''
     }
   },
+  components: {
+    Loading
+  },
   methods: {
     saveQuestion (title, question) {
+      const self = this
+      const user = auth.currentUser
+      if (user) {
+        this.$refs.loading.showDialog()
+        const authorEmail = user.email
+        const createdDate = Date.now()
+        const id = String(createdDate).concat(user.uid)
 
+        questionCollection.doc(id).set({
+          id: id,
+          authorEmail: authorEmail,
+          created: createdDate,
+          title: title,
+          question: question,
+          shortDesc: question.substring(0, 40).concat('...')
+        })
+          .then(() => {
+            self.$refs.loading.hideDialog()
+            swal('SUCCESS', 'Question has been created', 'success')
+              .then(() => self.$router.push('/questions'))
+              .catch((err) => console.error(err))
+          })
+          .catch((err) => {
+            self.$refs.loading.hideDialog()
+            swal('FAILED', 'Failed to save Question', 'error')
+            console.error(err)
+          })
+      }
     }
   }
 }
