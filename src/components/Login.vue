@@ -5,17 +5,19 @@
     <div class="field">
       <label class="label">Email</label>
       <div class="control">
-        <input class="input" type="text" placeholder="Email" v-model="email">
+        <input class="input" type="text" placeholder="Email" v-model="user_email">
       </div>
     </div>
     <div class="field">
       <label class="label">Password</label>
       <div class="control">
-        <input class="input" type="password" placeholder="Password" v-model="password">
+        <input class="input" type="password" placeholder="Password" v-model="user_password">
       </div>
     </div>
     <div class="control">
-      <button class="button is-link" v-on:click="login(email, password)" id="btn_link">
+      <button class="button is-link" 
+      v-on:click="clickLogin({email:user_email, password:user_password})" 
+      id="btn_link">
         Login
       </button>
     </div>
@@ -24,40 +26,64 @@
 </template>
 
 <script>
-import { auth } from '../firebase'
+// import {mapState, mapActions} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
+import loginModule from '../modules/login/index'
 import Loading from '@/components/Loading'
 
+// Module name that ragistered in store.js
+const name = 'LoginModule'
+
 export default {
-  data () {
-    return {
-      email: '',
-      password: '',
-      error_message: ''
-    }
-  },
   components: {
     Loading
   },
+  created () {
+    const store = this.$store
+    if (!(store && store.state && store.state[name])) {
+      store.registerModule(name, loginModule)
+    } else {
+      console.log('reusing module: '.concat(name))
+    }
+  },
+  computed: {
+    // ...mapState(name, {
+    //   email: state => state.email,
+    //   error_message: state => state.error_message,
+    //   password: state => state.password,
+    //   login_status: state => state.login_status
+    // }),
+    ...mapGetters(name, {
+      email: 'getEmail',
+      error_message: 'getError',
+      password: 'getPassword',
+      login_status: 'getStatus'
+    }),
+    user_email: {
+      get () { return this.email },
+      set (value) { this.updateEmail(value) }
+    },
+    user_password: {
+      get () { return this.password },
+      set (value) { this.updatePassword(value) }
+    }
+  },
   methods: {
-    login (email, password) {
-      let self = this
-      if (email === '' || password === '') {
-        this.error_message = 'Please enter email and password'
-        return
-      }
-
+    ...mapActions(name, ['resetStatusAction', 'updateEmail', 'updatePassword', 'login']),
+    clickLogin (payloadData) {
       this.$refs.loading.showDialog()
-      auth.signInWithEmailAndPassword(email, password)
-        .then(function () {
-          self.$refs.loading.hideDialog()
-          self.error_message = ''
-          self.$router.push('/questions')
-        })
-        .catch(function (error) {
-          self.$refs.loading.hideDialog()
-          self.error_message = 'Login failed please make sure you have enter valid email and password'
-          console.error(error)
-        })
+      this.resetStatusAction()
+      this.login(payloadData)
+    }
+  },
+  watch: {
+    login_status (val) {
+      if (val !== null) {
+        this.$refs.loading.hideDialog()
+        if (val) {
+          this.$router.push('/questions')
+        }
+      }
     }
   }
 }

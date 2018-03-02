@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueFire from 'vuefire'
+import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(VueFire)
@@ -12,6 +13,7 @@ Vue.use(VueFire)
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })
